@@ -26,7 +26,7 @@ Running the main file `udf.rb` without args shows how to use it:
 
     Actions:
       load    Loads UDFs into your database
-      drop    Removes UDFs into your database
+      drop    Removes UDFs from your database
       test    Runs UDF unit tests on your database
       print   Pretty-print SQL for making the UDFs
 
