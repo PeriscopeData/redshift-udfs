@@ -692,7 +692,6 @@
       create or replace function format_num (num float, format varchar)
         returns varchar
         stable as $$
-          import urlparse
           if not num or not format:
             return None
           try:
