@@ -15,6 +15,7 @@ class UdfHarness
         UdfTimeHelpers::UDFS,
         UdfStringUtils::UDFS,
         UdfNumberUtils::UDFS,
+        UdfStats::UDFS,
     ].flatten.select { |u| only_udf.nil? or u[:name] == only_udf.to_sym }
   end
 
