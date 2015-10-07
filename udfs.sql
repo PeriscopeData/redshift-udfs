@@ -778,3 +778,28 @@
         finalizefunc = agg_finalize_second_max
       );
     
+
+      /*
+      EXPERIMENT_RESULT_P_VALUE
+      Returns a p-value for a controlled experiment to determine statistical significance
+
+      Examples:
+        select round(experiment_result_p_value(5000,486, 5000, 527),3) --> 0.185
+        select case when experiment_result_p_value(5000,486, 5000, 527) < 0.05 then 'yes' else 'no' end as signifcant --> 'no'
+        select experiment_result_p_value(20000,17998,20000, 17742) --> 3.57722238820663e-05
+        select case when experiment_result_p_value(20000,17998,20000, 17742) < 0.05 then 'yes' else 'no' end as significant --> 'yes'
+      */
+      create or replace function experiment_result_p_value (control_size float, control_conversion float, experiment_size float, experiment_conversion float)
+        returns float
+        stable as $$
+          from scipy.stats import chi2_contingency
+          from numpy import array
+          observed = array([
+            [control_size - control_conversion, control_conversion],
+            [experiment_size - experiment_conversion, experiment_conversion]
+          ])
+          result = chi2_contingency(observed, correction=True)
+          chisq, p = result[:2]
+          return p
+        $$ language plpythonu;
+    
