@@ -7,7 +7,6 @@ class UdfNumberUtils
           params:      "num float, format varchar",
           return_type: "varchar",
           body:        %~
-            import urlparse
             if not num or not format:
               return None
             try:
