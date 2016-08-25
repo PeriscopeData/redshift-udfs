@@ -31,7 +31,9 @@ class Runner
       when :test then u.test_udfs
       when :print then u.print_udfs
       else
-        puts "Args not understood, run without args for help."
+        puts "Args not understood, showing help instead."
+        puts ARGS_HELP
+        exit
     end
   end
 end
