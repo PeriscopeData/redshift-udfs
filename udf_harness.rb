@@ -9,7 +9,6 @@ class UdfHarness
 
   def initialize(only_udf = nil)
     @udfs = [
-        UdfAggHelpers::UDFS,
         UdfJsonArrays::UDFS,
         UdfMysqlCompat::UDFS,
         UdfTimeHelpers::UDFS,
@@ -155,11 +154,7 @@ class UdfHarness
 
   def test_udf(udf)
     print "Testing #{udf[:type]} #{udf[:name]}"
-    if udf[:type] == :aggregate
-      test_aggregate(udf)
-    else
-      test_function(udf)
-    end
+    test_function(udf)
     print "\n"
   end
 
