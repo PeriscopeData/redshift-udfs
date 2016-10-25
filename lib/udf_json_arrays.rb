@@ -222,18 +222,6 @@ class UdfJsonArrays
                            {query: "select ?('4', null)", expect: "4"},
                            {query: "select ?('abc', 'a')", expect: nil},
                        ]
-      }, {
-          type:              :aggregate,
-          name:              :json_array_agg,
-          description:       "Concatenate a column of varchars into a json array",
-          params:            "varchar(max)",
-          init_function:     :agg_init_blank_varchar,
-          agg_function:      :json_array_push,
-          finalize_function: :agg_finalize_varchar,
-          tests:             [
-                                 {rows: ["foo", "bar", "baz"], expect: '["foo", "bar", "baz"]', example: true},
-                                 {rows: ["foo"], expect: '["foo"]', example: true},
-                             ]
       }
   ]
 end

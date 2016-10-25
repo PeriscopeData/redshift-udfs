@@ -1,53 +1,3 @@
-
-      /*
-      AGG_INIT_BLANK_VARCHAR
-      Aggregate helper: Inits an empty varchar
-
-      Examples:
-        select agg_init_blank_varchar() --> ''
-      */
-      create or replace function agg_init_blank_varchar ()
-        returns varchar
-        stable as $$
-          return ""
-        $$ language plpythonu;
-    
-
-      /*
-      AGG_FINALIZE_VARCHAR
-      Aggregate helper: Returns state varchar without modifying it
-
-      Examples:
-        select agg_finalize_varchar('str') --> 'str'
-      */
-      create or replace function agg_finalize_varchar (state varchar(max))
-        returns varchar(max)
-        stable as $$
-          return state
-        $$ language plpythonu;
-    
-
-      /*
-      AGG_AGG_NUMBERS_TO_LIST
-      Aggregate helper: Aggregate numbers into a string for use in a later step
-
-      Examples:
-        select agg_agg_numbers_to_list('', 3.5) --> '3.5'
-        select agg_agg_numbers_to_list('1.0 2.0 3.0', 4) --> '1.0 2.0 3.0 4.0'
-      */
-      create or replace function agg_agg_numbers_to_list (state varchar(max), a float)
-        returns varchar(max)
-        stable as $$
-          if not state or len(state) == 0:
-            if a:
-              return str(a)
-            return None
-          if not a:
-            return state
-          return state + " " + str(a)
-        $$ language plpythonu;
-    
-
       /*
       JSON_ARRAY_FIRST
       Returns the first element of a JSON array as a string
@@ -70,7 +20,7 @@
             return None
           return str(arr[0])
         $$ language plpythonu;
-    
+
 
       /*
       JSON_ARRAY_LAST
@@ -94,7 +44,7 @@
             return None
           return str(arr[-1])
         $$ language plpythonu;
-    
+
 
       /*
       JSON_ARRAY_NTH
@@ -118,7 +68,7 @@
             return None
           return str(arr[i])
         $$ language plpythonu;
-    
+
 
       /*
       JSON_ARRAY_SORT
@@ -144,7 +94,7 @@
             arr = sorted(arr)
           return json.dumps(arr)
         $$ language plpythonu;
-    
+
 
       /*
       JSON_ARRAY_REVERSE
@@ -166,7 +116,7 @@
             return None
           return json.dumps(arr[::-1])
         $$ language plpythonu;
-    
+
 
       /*
       JSON_ARRAY_POP
@@ -190,7 +140,7 @@
             arr.pop()
           return json.dumps(arr)
         $$ language plpythonu;
-    
+
 
       /*
       JSON_ARRAY_PUSH
@@ -214,7 +164,7 @@
           arr.append(value)
           return json.dumps(arr)
         $$ language plpythonu;
-    
+
 
       /*
       JSON_ARRAY_CONCAT
@@ -240,23 +190,6 @@
           arr_j.extend(arr_k)
           return json.dumps(arr_j)
         $$ language plpythonu;
-    
-
-      /*
-      JSON_ARRAY_AGG
-      Concatenate a column of varchars into a json array
-
-      Examples:
-        [foo, bar, baz] --> '["foo", "bar", "baz"]'
-        [foo] --> '["foo"]'
-      */
-      create aggregate json_array_agg (varchar(max))
-      (
-        initfunc = agg_init_blank_varchar,
-        aggfunc = json_array_push,
-        finalizefunc = agg_finalize_varchar
-      );
-    
 
       /*
       MYSQL_YEAR
@@ -274,7 +207,7 @@
             return None
           return ts.year
         $$ language plpythonu;
-    
+
 
       /*
       MYSQL_MONTH
@@ -292,7 +225,7 @@
             return None
           return ts.month
         $$ language plpythonu;
-    
+
 
       /*
       MYSQL_DAY
@@ -310,7 +243,7 @@
             return None
           return ts.day
         $$ language plpythonu;
-    
+
 
       /*
       MYSQL_HOUR
@@ -328,7 +261,7 @@
             return None
           return ts.hour
         $$ language plpythonu;
-    
+
 
       /*
       MYSQL_MINUTE
@@ -346,7 +279,7 @@
             return None
           return ts.minute
         $$ language plpythonu;
-    
+
 
       /*
       MYSQL_SECOND
@@ -364,7 +297,7 @@
             return None
           return ts.second
         $$ language plpythonu;
-    
+
 
       /*
       MYSQL_YEARWEEK
@@ -383,7 +316,7 @@
           cal = ts.isocalendar()
           return str(cal[0]) + str(cal[1]).zfill(2)
         $$ language plpythonu;
-    
+
 
       /*
       NOW
@@ -398,7 +331,7 @@
           from datetime import datetime
           datetime.utcnow()
         $$ language plpythonu;
-    
+
 
       /*
       POSIX_TIMESTAMP
@@ -415,7 +348,7 @@
             return None
           return (ts - datetime(1970, 1, 1)).total_seconds()
         $$ language plpythonu;
-    
+
 
       /*
       EMAIL_NAME
@@ -432,7 +365,7 @@
             return None
           return email.split('@')[0]
         $$ language plpythonu;
-    
+
 
       /*
       EMAIL_DOMAIN
@@ -449,7 +382,7 @@
             return None
           return email.split('@')[-1]
         $$ language plpythonu;
-    
+
 
       /*
       URL_PROTOCOL
@@ -472,7 +405,7 @@
           except ValueError:
             return None
         $$ language plpythonu;
-    
+
 
       /*
       URL_DOMAIN
@@ -494,7 +427,7 @@
           except ValueError:
             return None
         $$ language plpythonu;
-    
+
 
       /*
       URL_PATH
@@ -516,7 +449,7 @@
           except ValueError:
             return None
         $$ language plpythonu;
-    
+
 
       /*
       URL_PARAM
@@ -538,7 +471,7 @@
           except KeyError:
             return None
         $$ language plpythonu;
-    
+
 
       /*
       SPLIT_COUNT
@@ -555,7 +488,7 @@
             return None
           return len(str.split(delim))
         $$ language plpythonu;
-    
+
 
       /*
       TITLECASE
@@ -572,7 +505,7 @@
             return None
           return str.title()
         $$ language plpythonu;
-    
+
 
       /*
       STR_MULTIPLY
@@ -589,7 +522,7 @@
             return None
           return str * times
         $$ language plpythonu;
-    
+
 
       /*
       STR_INDEX
@@ -606,7 +539,7 @@
             return None
           return full_str.find(find_substr)
         $$ language plpythonu;
-    
+
 
       /*
       STR_RINDEX
@@ -624,7 +557,7 @@
             return None
           return full_str.rfind(find_substr)
         $$ language plpythonu;
-    
+
 
       /*
       STR_COUNT
@@ -642,42 +575,6 @@
             return None
           return full_str.count(find_substr)
         $$ language plpythonu;
-    
-
-      /*
-      AGG_AGG_COMMA_CONCAT
-      Aggregate helper: Concatenates varchars with commas
-
-      Examples:
-        select agg_agg_comma_concat('a', 'b') --> 'a,b'
-        select agg_agg_comma_concat('a,b,c', 'd,e') --> 'a,b,c,d,e'
-      */
-      create or replace function agg_agg_comma_concat (state varchar(max), a varchar(max))
-        returns varchar(max)
-        stable as $$
-          if not state or len(state) == 0:
-            return a
-          if not a or len(a) == 0:
-            return state
-          return state + "," + a
-        $$ language plpythonu;
-    
-
-      /*
-      COMMA_CONCAT
-      Concatenate a column of varchars with commas
-
-      Examples:
-        [foo, bar, baz] --> 'foo,bar,baz'
-        [foo] --> 'foo'
-      */
-      create aggregate comma_concat (varchar(max))
-      (
-        initfunc = agg_init_blank_varchar,
-        aggfunc = agg_agg_comma_concat,
-        finalizefunc = agg_finalize_varchar
-      );
-    
 
       /*
       FORMAT_NUM
@@ -702,82 +599,6 @@
             except ValueError:
               return None
         $$ language plpythonu;
-    
-
-      /*
-      AGG_FINALIZE_HARMONIC_MEAN
-      Aggregate helper: Convert a list of numbers into a harmonic mean
-
-      Examples:
-        select agg_finalize_harmonic_mean('1 2 3') --> 1.63636363636364
-        select agg_finalize_harmonic_mean('1.5 2.5 3.5') --> 2.21830985915493
-      */
-      create or replace function agg_finalize_harmonic_mean (state varchar(max))
-        returns float
-        stable as $$
-          import numpy
-          if not state or len(state) == 0:
-            return None
-          nums = list((float(v) for v in state.split() if float(v) > 0))
-          if len(nums) == 0:
-            return None
-          return len(nums) / sum(1.0 / v for v in nums)
-        $$ language plpythonu;
-    
-
-      /*
-      HARMONIC_MEAN
-      Compute the harmonic mean of a set of positive numbers
-
-      Examples:
-        [3.5, 4.5, 5.5] --> 4.34937238493724
-        [6, 10, 20] --> 9.47368421052632
-      */
-      create aggregate harmonic_mean (float)
-      (
-        initfunc = agg_init_blank_varchar,
-        aggfunc = agg_agg_numbers_to_list,
-        finalizefunc = agg_finalize_harmonic_mean
-      );
-    
-
-      /*
-      AGG_FINALIZE_SECOND_MAX
-      Aggregate helper: Get the second highest value from a list of numbers
-
-      Examples:
-        select agg_finalize_second_max('1 2 3') --> 2.0
-        select agg_finalize_second_max('1.5 5.5 3.5') --> 3.5
-        select agg_finalize_second_max('-10 -100') --> -100.0
-      */
-      create or replace function agg_finalize_second_max (state varchar(max))
-        returns float
-        stable as $$
-          import numpy
-          if not state or len(state) == 0:
-            return None
-          nums = list((float(v) for v in state.split()))
-          if len(nums) <= 1:
-            return None
-          return sorted(nums)[-2]
-        $$ language plpythonu;
-    
-
-      /*
-      SECOND_MAX
-      Get the second greatest number from a set of numbers
-
-      Examples:
-        [3.5, 4.5, 5.5] --> 4.5
-        [6, -10, 20, 50] --> 20
-      */
-      create aggregate second_max (float)
-      (
-        initfunc = agg_init_blank_varchar,
-        aggfunc = agg_agg_numbers_to_list,
-        finalizefunc = agg_finalize_second_max
-      );
-    
 
       /*
       EXPERIMENT_RESULT_P_VALUE
@@ -802,4 +623,3 @@
           chisq, p = result[:2]
           return p
         $$ language plpythonu;
-    

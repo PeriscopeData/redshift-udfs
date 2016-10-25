@@ -231,39 +231,6 @@ class UdfStringUtils
                            {query: "select ?('', '')", expect: nil},
                            {query: "select ?(null, null)", expect: nil},
                        ]
-      }, {
-          type:        :function,
-          name:        :agg_agg_comma_concat,
-          description: "Concatenates varchars with commas",
-          params:      "state varchar(max), a varchar(max)",
-          return_type: "varchar(max)",
-          body:        %~
-            if not state or len(state) == 0:
-              return a
-            if not a or len(a) == 0:
-              return state
-            return state + "," + a
-          ~,
-          tests:       [
-                           {query: "select ?('a', 'b')", expect: 'a,b', example: true},
-                           {query: "select ?('a,b,c', 'd,e')", expect: 'a,b,c,d,e', example: true},
-                           {query: "select ?(null, 'a')", expect: 'a'},
-                           {query: "select ?('a', null)", expect: 'a'},
-                           {query: "select ?('', '')", expect: ''},
-                           {query: "select ?(null, null)", expect: nil},
-                       ]
-      }, {
-          type:              :aggregate,
-          name:              :comma_concat,
-          description:       "Concatenate a column of varchars with commas",
-          params:            "varchar(max)",
-          init_function:     :agg_init_blank_varchar,
-          agg_function:      :agg_agg_comma_concat,
-          finalize_function: :agg_finalize_varchar,
-          tests:             [
-                                 {rows: ["foo", "bar", "baz"], expect: "foo,bar,baz", example: true},
-                                 {rows: ["foo"], expect: "foo", example: true},
-                             ]
       }
-  ]
+    ]
 end
