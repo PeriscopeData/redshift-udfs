@@ -10,6 +10,7 @@ class UdfHarness
   def initialize(only_udf = nil)
     @udfs = [
         UdfJsonArrays::UDFS,
+        UdfJsonDicts::UDFS,
         UdfMysqlCompat::UDFS,
         UdfTimeHelpers::UDFS,
         UdfStringUtils::UDFS,
