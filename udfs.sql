@@ -623,3 +623,20 @@
           chisq, p = result[:2]
           return p
         $$ language plpythonu;
+
+      /*
+      REMOVE_ACCENTS
+      Remove accents from a string
+
+      Examples:
+        select remove_accents('café') --> 'cafe'
+      */
+      create or replace function remove_accents (str varchar(max))
+        returns varchar(max)
+        stable as $$
+          import unicodedata
+          if not str:
+            return None
+          str = str.decode('utf-8')
+          return unicodedata.normalize('NFKD', str).encode('ASCII', 'ignore')
+        $$ language plpythonu;
