@@ -231,6 +231,24 @@ class UdfStringUtils
                            {query: "select ?('', '')", expect: nil},
                            {query: "select ?(null, null)", expect: nil},
                        ]
+      }, {
+          type:        :function,
+          name:        :remove_accents,
+          description: "Remove accents from a string",
+          params:      "str varchar(max)",
+          return_type: "varchar(max)",
+          body:        %~
+            import unicodedata
+            if not str:
+              return None
+            str = str.decode('utf-8')
+            return unicodedata.normalize('NFKD', str).encode('ASCII', 'ignore')
+          ~,
+          tests:       [
+                           {query: "select ?('café')", expect: 'cafe', example: true},
+                           {query: "select ?('')", expect: nil},
+                           {query: "select ?(null)", expect: nil},
+                       ]
       }
     ]
 end
