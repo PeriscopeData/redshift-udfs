@@ -27,12 +27,17 @@ class UdfStats
         }, {
             type:        :function,
             name:        :binomial_hpdr,
-            description: "Returns true if a value is within the Highest Posterior Density Region",
-            params:      "value float, successes integer, samples integer, pct float, a integer, b integer, n_pbins integer",
-            return_type: "integer",
+            description: "Compare value against boundaries of Highest Posterior Density Region",
+            params:      "value float, successes bigint, samples bigint, pct float, a bigint, b bigint, n_pbins integer",
+            return_type: "smallint",
             body:        %~
               # Taken from:
               # http://stackoverflow.com/a/19285227
+
+              # Check input arguments
+              if successes is None or samples is None or samples < 1:
+                return None
+
               import numpy
               from scipy.stats import beta
               from scipy.stats import norm
@@ -50,11 +55,11 @@ class UdfStats
                 min_p = 1.
               p_range = numpy.linspace(min_p, max_p, n_pbins+1)
               if mode > 0.5:
-                  sf = rv.sf(p_range)
-                  pmf = sf[:-1] - sf[1:]
+                sf = rv.sf(p_range)
+                pmf = sf[:-1] - sf[1:]
               else:
-                  cdf = rv.cdf(p_range)
-                  pmf = cdf[1:] - cdf[:-1]
+                cdf = rv.cdf(p_range)
+                pmf = cdf[1:] - cdf[:-1]
               # find the upper and lower bounds of the interval 
               sorted_idxs = numpy.argsort( pmf )[::-1]
               cumsum = numpy.cumsum( numpy.sort(pmf)[::-1] )
@@ -79,11 +84,16 @@ class UdfStats
             type:        :function,
             name:        :binomial_hpdr_upper,
             description: "Returns the upper boundary fo the Highest Posterior Density Region",
-            params:      "successes integer, samples integer, pct float, a integer, b integer, n_pbins integer",
+            params:      "successes bigint, samples bigint, pct float, a bigint, b bigint, n_pbins integer",
             return_type: "float",
             body:        %~
               # Taken from:
               # http://stackoverflow.com/a/19285227
+
+              # Check input arguments
+              if successes is None or samples is None or samples < 1:
+                return None
+
               import numpy
               from scipy.stats import beta
               from scipy.stats import norm
@@ -121,11 +131,16 @@ class UdfStats
             type:        :function,
             name:        :binomial_hpdr_lower,
             description: "Returns the lower boundary of the Highest Posterior Density Region",
-            params:      "successes integer, samples integer, pct float, a integer, b integer, n_pbins integer",
+            params:      "successes bigint, samples bigint, pct float, a bigint, b bigint, n_pbins integer",
             return_type: "float",
             body:        %~
               # Taken from:
               # http://stackoverflow.com/a/19285227
+
+              # Check input arguments
+              if successes is None or samples is None or samples < 1:
+                return None
+
               import numpy
               from scipy.stats import beta
               from scipy.stats import norm
