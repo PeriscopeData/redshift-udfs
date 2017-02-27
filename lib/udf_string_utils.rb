@@ -231,6 +231,19 @@ class UdfStringUtils
                            {query: "select ?('', '')", expect: nil},
                            {query: "select ?(null, null)", expect: nil},
                        ]
+      }, {
+          type:        :function,
+          name:        :str_join_range,
+          description: "Joins a numeric range with a given separator",
+          params:      "first integer, last integer, step integer, delimiter varchar(max)",
+          return_type: "varchar(max)",
+          body:        %~
+            return delimiter.join(str(x) for x in range(first, last, step))
+          ~,
+          tests:       [
+                           {query: "select ?(1, 3, 1, ',')", expect: "1,2" , example: true},
+                           {query: "select ?(1, 5, 2, '|')", expect: "1|3", example: true},
+                       ]
       }
     ]
 end
