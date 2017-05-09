@@ -4,8 +4,8 @@ class UdfJsonDicts
           type:        :function,
           name:        :json_extract_path_keys,
           description: "Return the list of keys in a json dict as a json string",
-          params:      "jsonstr varchar(max)",
-          return_type: "varchar(max)",
+          params:      "jsonstr varchar(10000)",
+          return_type: "varchar(10000)",
           body:        %~
             import json
             if not jsonstr:
@@ -22,8 +22,8 @@ class UdfJsonDicts
           type:        :function,
           name:        :json_extract_path_key,
           description: "Return a specific key of a json dict",
-          params:      "jsonstr varchar(max), pos integer, reverse boolean",
-          return_type: "varchar(max)",
+          params:      "jsonstr varchar(10000), pos integer, reverse boolean",
+          return_type: "varchar(10000)",
           body:        %~
             import json
             if not jsonstr:
