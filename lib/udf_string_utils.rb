@@ -244,6 +244,48 @@ class UdfStringUtils
                            {query: "select ?(1, 3, 1, ',')", expect: "1,2" , example: true},
                            {query: "select ?(1, 5, 2, '|')", expect: "1|3", example: true},
                        ]
+      }, {
+          type:        :function,
+          name:        :str_room_adults,
+          description: "Returns total number of adults for a given room configuration",
+          params:      "room varchar(max)",
+          return_type: "integer",
+          body:        %~
+            adults = 0
+            for r in room.split('|'):
+              ch = r.split(':')
+              adults += int(ch[0])
+
+            return adults
+          ~,
+          tests:       [
+                           {query: "select ?('1|2')", expect: 3 , example: true},
+                           {query: "select ?('2')", expect: 2, example: true},
+                           {query: "select ?('2:0,0')", expect: 2, example: true},
+                           {query: "select ?('2:0|1:2,6')", expect: 3, example: true},
+                       ]
+      }, {
+          type:        :function,
+          name:        :str_room_children,
+          description: "Returns total number of children for a given room configuration",
+          params:      "room varchar(max)",
+          return_type: "integer",
+          body:        %~
+            children = 0
+            for r in room.split('|'):
+              ch = r.split(':')
+              if len(ch) > 1:
+                children += len(ch[-1].split(','))
+
+            return children
+          ~,
+          tests:       [
+                           {query: "select ?('1|2')", expect: 0 , example: true},
+                           {query: "select ?('2')", expect: 0, example: true},
+                           {query: "select ?('2:0,0')", expect: 2, example: true},
+                           {query: "select ?('2:0|1:2,6')", expect: 3, example: true},
+                           {query: "select ?('2|1:12')", expect: 1, example: true},
+                       ]
       }
     ]
 end
