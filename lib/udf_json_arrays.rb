@@ -222,6 +222,25 @@ class UdfJsonArrays
                            {query: "select ?('4', null)", expect: "4"},
                            {query: "select ?('abc', 'a')", expect: nil},
                        ]
+      } , {
+          type:        :function,
+          name:        :is_json,
+          description: "Validates JSON",
+          params:      "j varchar(max)",
+          return_type: "boolean",
+          body:        %~
+            import json
+            try:
+              json_object = json.loads(j)
+            except ValueError, e:
+              return False
+            return True
+          ~,
+          tests:       [
+                           {query: "select ?('[\"a\",\"c\",\"b\"]'", expect: 'true', example: true},
+                           {query: "select ?('blas')", expect: false},
+                       ]
       }
+
   ]
 end

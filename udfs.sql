@@ -640,3 +640,21 @@
           str = str.decode('utf-8')
           return unicodedata.normalize('NFKD', str).encode('ASCII', 'ignore')
         $$ language plpythonu;
+  
+      /*
+      IS_JSON 
+      checks if the value is valid json
+
+      Examples:
+        select is_json('café') --> False
+      */
+      create or replace function is_json(j varchar(max))
+        returns boolean
+        stable as $$
+          import json
+          try:
+            json_object = json.loads(j)
+          except ValueError, e:
+            return False
+          return True
+      $$ language plpythonu;
